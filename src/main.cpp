@@ -23,9 +23,9 @@
 
 int main (int argc, char *argv[]) 
 { 
-  using namespace se3;
+  using namespace pinocchio;
   Model model;
-  buildModels::humanoidSimple(model);
+  buildModels::humanoid(model);
 
   Data data(model);
 
