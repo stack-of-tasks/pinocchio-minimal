@@ -20,19 +20,11 @@ SET(PROJECT_NAME pinocchio-minimal)
 SET(PROJECT_DESCRIPTION "Minimal example of a simple application depending on Pinocchio")
 SET(PROJECT_URL "http://github.com/stack-of-tasks/pinocchio-minimal")
 
-# ----------------------------------------------------
-# --- DEPENDENCIES -----------------------------------
-# ----------------------------------------------------
+# pinocchio dependency
 find_package(pinocchio 2.3.0 REQUIRED)
 
-# ----------------------------------------------------
-# --- EXECUTABLE -------------------------------------
-# ----------------------------------------------------
-SET(${PROJECT_NAME}_SOURCES
-    main.cpp
-  )
-
 # Create the main executable
-ADD_EXECUTABLE(main ${${PROJECT_NAME}_SOURCES})
-# Link main to its dependencies 
+ADD_EXECUTABLE(main main.cpp)
+
+# Link main to its dependencies
 target_link_libraries(main PUBLIC pinocchio::pinocchio)
