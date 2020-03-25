@@ -30,18 +30,10 @@ SET(CMAKE_VERBOSE_MAKEFILE True)
 find_package(pinocchio 2.3.0 REQUIRED)
 
 # ----------------------------------------------------
-# --- INCLUDE ----------------------------------------
-# ----------------------------------------------------
-# Add headers here if any
-SET(${PROJECT_NAME}_HEADERS
-    include/pinocchio-minimal/fwd.hpp
-  )
-
-# ----------------------------------------------------
 # --- EXECUTABLE -------------------------------------
 # ----------------------------------------------------
 SET(${PROJECT_NAME}_SOURCES
-    src/main.cpp
+    main.cpp
   )
 
 # Create the main executable
