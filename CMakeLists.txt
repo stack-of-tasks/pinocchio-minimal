@@ -30,7 +30,7 @@ SET(CMAKE_VERBOSE_MAKEFILE True)
 # ----------------------------------------------------
 # --- DEPENDENCIES -----------------------------------
 # ----------------------------------------------------
-ADD_REQUIRED_DEPENDENCY("pinocchio >= 2.1.0")
+find_package(pinocchio 2.3.0 REQUIRED)
 
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
@@ -50,7 +50,7 @@ SET(${PROJECT_NAME}_SOURCES
 # Create the main executable
 ADD_EXECUTABLE(main ${${PROJECT_NAME}_SOURCES})
 # Link main to its dependencies 
-PKG_CONFIG_USE_DEPENDENCY(main pinocchio)
+target_link_libraries(main PUBLIC pinocchio::pinocchio)
 
 # --- PACKAGING ----------------------------------------------------------------
 PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
