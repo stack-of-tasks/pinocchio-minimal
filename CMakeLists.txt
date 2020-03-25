@@ -16,9 +16,6 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
-INCLUDE(cmake/base.cmake)
-INCLUDE(cmake/boost.cmake)
-
 SET(PROJECT_NAME pinocchio-minimal)
 SET(PROJECT_DESCRIPTION "Minimal example of a simple application depending on Pinocchio")
 SET(PROJECT_URL "http://github.com/stack-of-tasks/pinocchio-minimal")
@@ -51,6 +48,3 @@ SET(${PROJECT_NAME}_SOURCES
 ADD_EXECUTABLE(main ${${PROJECT_NAME}_SOURCES})
 # Link main to its dependencies 
 target_link_libraries(main PUBLIC pinocchio::pinocchio)
-
-# --- PACKAGING ----------------------------------------------------------------
-PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
