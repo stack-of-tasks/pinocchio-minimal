@@ -16,41 +16,15 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
-INCLUDE(cmake/base.cmake)
-INCLUDE(cmake/boost.cmake)
-
 SET(PROJECT_NAME pinocchio-minimal)
 SET(PROJECT_DESCRIPTION "Minimal example of a simple application depending on Pinocchio")
 SET(PROJECT_URL "http://github.com/stack-of-tasks/pinocchio-minimal")
 
-# Disable -Werror on Unix for now.
-SET(CXX_DISABLE_WERROR True)
-SET(CMAKE_VERBOSE_MAKEFILE True)
-
-# ----------------------------------------------------
-# --- DEPENDENCIES -----------------------------------
-# ----------------------------------------------------
-ADD_REQUIRED_DEPENDENCY("pinocchio >= 2.1.0")
-
-# ----------------------------------------------------
-# --- INCLUDE ----------------------------------------
-# ----------------------------------------------------
-# Add headers here if any
-SET(${PROJECT_NAME}_HEADERS
-    include/pinocchio-minimal/fwd.hpp
-  )
-
-# ----------------------------------------------------
-# --- EXECUTABLE -------------------------------------
-# ----------------------------------------------------
-SET(${PROJECT_NAME}_SOURCES
-    src/main.cpp
-  )
+# pinocchio dependency
+find_package(pinocchio 2.3.0 REQUIRED)
 
 # Create the main executable
-ADD_EXECUTABLE(main ${${PROJECT_NAME}_SOURCES})
-# Link main to its dependencies 
-PKG_CONFIG_USE_DEPENDENCY(main pinocchio)
+ADD_EXECUTABLE(main main.cpp)
 
-# --- PACKAGING ----------------------------------------------------------------
-PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
+# Link main to its dependencies
+target_link_libraries(main PUBLIC pinocchio::pinocchio)
