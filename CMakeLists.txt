@@ -20,10 +20,6 @@ SET(PROJECT_NAME pinocchio-minimal)
 SET(PROJECT_DESCRIPTION "Minimal example of a simple application depending on Pinocchio")
 SET(PROJECT_URL "http://github.com/stack-of-tasks/pinocchio-minimal")
 
-# Disable -Werror on Unix for now.
-SET(CXX_DISABLE_WERROR True)
-SET(CMAKE_VERBOSE_MAKEFILE True)
-
 # ----------------------------------------------------
 # --- DEPENDENCIES -----------------------------------
 # ----------------------------------------------------
