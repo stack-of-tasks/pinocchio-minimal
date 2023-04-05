@@ -15,14 +15,13 @@
 // Pinocchio If not, see
 // <http://www.gnu.org/licenses/>.
 
-#include <pinocchio/multibody/model.hpp>
-#include <pinocchio/parsers/sample-models.hpp>
+#include <iostream>
 #include <pinocchio/algorithm/crba.hpp>
 #include <pinocchio/algorithm/joint-configuration.hpp>
-#include <iostream>
+#include <pinocchio/multibody/model.hpp>
+#include <pinocchio/parsers/sample-models.hpp>
 
-int main (int argc, char *argv[]) 
-{ 
+int main(int argc, char *argv[]) {
   using namespace pinocchio;
   Model model;
   buildModels::humanoid(model);
@@ -31,13 +30,13 @@ int main (int argc, char *argv[])
 
   // Run CRBA from random configuration
   Eigen::VectorXd q = randomConfiguration(model);
-  Eigen::MatrixXd M = crba(model,data,q);
+  Eigen::MatrixXd M = crba(model, data, q);
 
   // Symmetrize M
-  M.triangularView<Eigen::StrictlyLower>() = M.transpose().triangularView<Eigen::StrictlyLower>();
-  
-  std::cout << "Joint space inertia matrix:\n" << M << std::endl; 
+  M.triangularView<Eigen::StrictlyLower>() =
+      M.transpose().triangularView<Eigen::StrictlyLower>();
+
+  std::cout << "Joint space inertia matrix:\n" << M << std::endl;
 
   return -1;
-} 
-
+}
