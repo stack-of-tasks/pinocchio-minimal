@@ -23,7 +23,6 @@ jobs:
             os: "windows"
           - pm: "nix"
             os: "windows"
-          - os: "windows"  # TODO: remove this, and fix it.
         include:
           - pm: "robotpkg"
             os: "ubuntu"
@@ -77,7 +76,7 @@ jobs:
 
       # ros
       - if: matrix.pm == 'ros'
-        run: sudo wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O /ros.key
+        run: sudo wget "https://raw.githubusercontent.com/ros/rosdistro/master/ros.key" -O /ros.key
       - if: matrix.pm == 'ros'
         run: >
           echo "deb [arch=amd64 signed-by=/ros.key] http://packages.ros.org/ros2/ubuntu ${UBUNTU} main"
