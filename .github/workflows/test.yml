@@ -55,8 +55,6 @@ jobs:
         uses: cachix/install-nix-action@v21
       - if: matrix.pm == 'nix'
         run: >
-          mkdir -p ~/.config/nix;
-          echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf;
           nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs;
           nix-channel --update;
           nix-env -iA nixpkgs.python310Packages.pinocchio
