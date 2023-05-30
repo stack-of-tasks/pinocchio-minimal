@@ -31,7 +31,12 @@ jobs:
         with:
           auto-activate-base: true
 
-      - run: conda install -c conda-forge pinocchio cmake
+      - run: conda install -c conda-forge pinocchio
+        if: matrix.pm == 'conda'
+
+      - run: |
+          conda info
+          conda list
         if: matrix.pm == 'conda'
 
       - run: cmake -B build -S .
