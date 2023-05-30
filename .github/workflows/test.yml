@@ -56,11 +56,10 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixpkgs-unstable
       - if: matrix.pm == 'nix'
-        run: nix-env -iA nixpkgs.python310Packages.pinocchio
-      - if: matrix.pm == 'nix'
-        run: nix develop 'nixpkgs#python310Packages.pinocchio' -c env | grep .=.
-      - if: matrix.pm == 'nix'
-        run: nix develop 'nixpkgs#python310Packages.pinocchio' -c env | grep .=. >> $GITHUB_ENV
+        run: >
+          nix shell   'nixpkgs#python310Packages.pinocchio' -c
+          nix develop 'nixpkgs#python310Packages.pinocchio' -c
+          env | grep .=. >> $GITHUB_ENV
 
       # robotpkg
       - if: matrix.pm == 'robotpkg'
