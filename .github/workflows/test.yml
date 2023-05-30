@@ -6,46 +6,37 @@ on:
     - cron: "0 7 * * 0"
 
 jobs:
-  test:
-    name: "Test ${{ matrix.pm }} on ${{ matrix.os }}"
+  test-pip:
+    name: "Test pip on ${{ matrix.os }}"
     runs-on: "${{ matrix.os }}-latest"
     strategy:
       matrix:
-        pm: ["pip", "conda"]
-        os: ["ubuntu", "macos", "windows"]
-        exclude:
-          - pm: "pip"
-            os: "windows"
+        os: ["ubuntu", "macos"]
 
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - run: pip install pin[build]
-        if: matrix.pm == 'pip'
-
+      - run: pip3 install pin[build]
       - run: echo "CMAKE_PREFIX_PATH=$(cmeel cmake)" >> $GITHUB_ENV
-        if: matrix.pm == 'pip'
+
+      - run: cmake -B build -S . -DPYTHON_EXECUTABLE=python3
+      - run: cmake --build build
+      - run: ./build/main
+
+  test-conda:
+    name: "Test conda on ${{ matrix.os }}"
+    runs-on: "${{ matrix.os }}-latest"
+    strategy:
+      matrix:
+        os: ["ubuntu", "macos", "windows"]
+
+    steps:
+      - uses: actions/checkout@v3
 
       - uses: conda-incubator/setup-miniconda@v2
-        if: matrix.pm == 'conda'
-        with:
-          activate-environment: test
-
       - run: conda install -n test -c conda-forge pinocchio
-        if: matrix.pm == 'conda'
-
-      - run: |
-          conda info
-          conda list
-        shell: bash -el {0}
-        if: matrix.pm == 'conda'
 
       - run: cmake -B build -S .
-        shell: bash -el {0}
+        shell: conda run -n test /bin/bash -c {0}
       - run: cmake --build build
-        shell: bash -el {0}
       - run: ./build/main
