@@ -14,11 +14,11 @@ jobs:
         os: ["ubuntu", "macos"]
         pm: ["pip", "conda"]
         arch: ["x86_64", "aarch64"]
-      exclude:
-        - arch: "aarch64"
-          os: "macos"
-        - arch: "aarch64"
-          pm: "conda"
+        exclude:
+          - arch: "aarch64"
+            os: "macos"
+          - arch: "aarch64"
+            pm: "conda"
 
     steps:
       - uses: actions/checkout@v3
