@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4  # required only because macos-latest still has python 2 by default…
         if: matrix.pm == 'pip'
         with:
           python-version: "3.11"
@@ -34,6 +34,10 @@ jobs:
         if: matrix.pm == 'conda'
       - run: echo "CMAKE_PREFIX_PATH=$CONDA/envs/test" >> $GITHUB_ENV
         if: matrix.pm == 'conda'
+
+      - run: echo "CMAKE_GENERATOR=NMake Makefiles" >> $GITHUB_ENV
+        if: matrix.os == 'windows'
+
 
       - run: cmake -B build -S .
       - run: cmake --build build
