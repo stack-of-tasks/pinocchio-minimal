@@ -39,9 +39,7 @@ jobs:
       # thx https://stackoverflow.com/a/74547513/1368502
       - run: set
         if: matrix.os == 'windows'
-      - run: >
-          cmd /c "'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat' && set"
-          cmd /c "'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat' && set" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - run: cmd /c "'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat' && set" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         if: matrix.os == 'windows'
       - run: set
         if: matrix.os == 'windows'
