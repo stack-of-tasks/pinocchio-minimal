@@ -56,6 +56,8 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixpkgs-unstable
       - if: matrix.pm == 'nix'
+        run: nix-channel --list
+      - if: matrix.pm == 'nix'
         run: nix-env -iA nixpkgs.python310Packages.pinocchio
 
       # robotpkg
