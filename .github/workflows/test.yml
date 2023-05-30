@@ -26,7 +26,7 @@ jobs:
       - run: echo "CMAKE_PREFIX_PATH=$(cmeel cmake)" >> $GITHUB_ENV
         if: matrix.pm == 'pip'
 
-      - run: $CONDA install -c conda-forge pinocchio cmake
+      - run: conda install -c conda-forge pinocchio cmake
         if: matrix.pm == 'conda'
 
       - run: cmake -B build -S .
