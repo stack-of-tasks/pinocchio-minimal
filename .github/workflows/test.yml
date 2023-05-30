@@ -41,6 +41,8 @@ jobs:
         if: matrix.pm == 'conda'
 
       - run: env
+      - run: ls "${CMAKE_PREFIX_PATH}/include"
+      - run: ls "${CMAKE_PREFIX_PATH}/share"
       - run: cmake -B build -S .
       - run: cmake --build build
       - run: ./build/main
