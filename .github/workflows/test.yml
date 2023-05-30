@@ -7,6 +7,8 @@ on:
 
 env:
   ROBOTPKG_URL: "http://robotpkg.openrobots.org/packages/debian"
+  UBUNTU: "jammy"
+  ROS: "humble"
 
 jobs:
   test:
@@ -22,7 +24,9 @@ jobs:
           - pm: "nix"
             os: "windows"
         include:
-          - pm: "apt"
+          - pm: "robotpkg"
+            os: "ubuntu"
+          - pm: "ros"
             os: "ubuntu"
     steps:
       - uses: actions/checkout@v3
@@ -45,20 +49,35 @@ jobs:
       - if: matrix.pm == 'conda'
         run: echo "CMAKE_PREFIX_PATH=$CONDA/envs/test" >> $GITHUB_ENV
 
-      # apt
-      - if: matrix.pm == 'apt'
-        run: sudo wget "${ROBOTPKG_URL}/robotpkg.gpg" -O /robotpkg.gpg;
-      - if: matrix.pm == 'apt'
+      # robotpkg
+      - if: matrix.pm == 'robotpkg'
+        run: sudo wget "${ROBOTPKG_URL}/robotpkg.gpg" -O /robotpkg.gpg
+      - if: matrix.pm == 'robotpkg'
         run: >
-          echo "deb [arch=amd64 signed-by=/robotpkg.gpg] ${ROBOTPKG_URL}/pub jammy robotpkg"
+          echo "deb [arch=amd64 signed-by=/robotpkg.gpg] ${ROBOTPKG_URL}/pub ${UBUNTU} robotpkg"
           | sudo tee /etc/apt/sources.list.d/robotpkg.list
-      - if: matrix.pm == 'apt'
+      - if: matrix.pm == 'robotpkg'
         run: sudo apt-get update && sudo apt-get install -qy robotpkg-py310-pinocchio
-      - if: matrix.pm == 'apt'
+      - if: matrix.pm == 'robotpkg'
         run: echo "CMAKE_PREFIX_PATH=/opt/openrobots" >> $GITHUB_ENV
+
+      # ros
+      - if: matrix.pm == 'ros'
+        run: sudo wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O /ros.key
+      - if: matrix.pm == 'ros'
+        run: >
+          echo "deb [arch=amd64 signed-by=/ros.key] http://packages.ros.org/ros2/ubuntu ${UBUNTU} main"
+          | sudo tee /etc/apt/sources.list.d/ros.list
+      - if: matrix.pm == 'ros'
+        run: sudo apt-get update && sudo apt-get install -qy "ros-${ROS}-pinocchio"
+      - if: matrix.pm == 'ros'
+        run: echo "CMAKE_PREFIX_PATH=/opt/ros" >> $GITHUB_ENV
 
       # windows
       # thx https://gist.github.com/justinian/81a2e55c89e8301a8a96 & https://stackoverflow.com/a/74547513/1368502
+      - if: matrix.os == 'windows'
+        run: >
+          cmd /c " `"%programfiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat`" amd64 && set"
       - if: matrix.os == 'windows'
         run: >
           cmd /c " `"%programfiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat`" amd64 && set"
