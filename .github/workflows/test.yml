@@ -35,8 +35,20 @@ jobs:
       - run: echo "CMAKE_PREFIX_PATH=$CONDA/envs/test" >> $GITHUB_ENV
         if: matrix.pm == 'conda'
 
-      - run: call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
+      # thx https://gist.github.com/justinian/81a2e55c89e8301a8a96
+      - run: env
+      - run: >
+          $tempFile = [IO.Path]::GetTempFileName()
+          cmd /c "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" && set > "$tempFile"
+          type $tempFile
+          Get-Content $tempFile | Foreach-Object {
+              if($_ -match "^(.*?)=(.*)$") {
+                  echo "$matches[1]=$matches[2]" >> $env:GITHUB_ENV
+              }
+          }
+          Remove-Item $tempFile
         if: matrix.os == 'windows'
+      - run: env
 
       - run: cmake -B build -S .
       - run: cmake --build build
