@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: "0 7 * * 0"
 
+env:
+  ROBOTPKG_URL: "http://robotpkg.openrobots.org/packages/debian"
+
 jobs:
   test:
     name: "Test ${{ matrix.pm }} on ${{ matrix.os }}"
@@ -44,11 +47,11 @@ jobs:
 
       # apt
       - if: matrix.pm == 'apt'
-        run: curl http://robotpkg.openrobots.org/packages/debian/robotpkg.asc | sudo tee /usr/share/keyrings/robotpkg.asc
+        run: sudo wget "${ROBOTPKG_URL}/robotpkg.gpg" -O /robotpkg.gpg;
       - if: matrix.pm == 'apt'
-        run: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/robotpkg.asc] http://robotpkg.openrobots.org/packages/debian/pub jammy robotpkg" | sudo tee /etc/apt/sources.list.d/robotpkg.list
+        run: echo "deb [arch=amd64 signed-by=/robotpkg.gpg] ${ROBOTPKG_URL}/pub jammy robotpkg" | sudo tee /etc/apt/sources.list.d/robotpkg.list
       - if: matrix.pm == 'apt'
-        run: sudo apt-get update && sudo apt install -qy robotpkg-py310-pinocchio
+        run: sudo apt-get update && sudo apt-get install -qy robotpkg-py310-pinocchio
       - if: matrix.pm == 'apt'
         run: echo "CMAKE_PREFIX_PATH=/opt/openrobots" >> $GITHUB_ENV
 
