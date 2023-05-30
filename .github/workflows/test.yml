@@ -61,6 +61,12 @@ jobs:
           nix-channel --update;
           nix-env -iA nixpkgs.coreutils-full nixpkgs.python310Packages.pinocchio
       - if: matrix.pm == 'nix'
+        run: nix develop 'nixpkgs#python310Packages.pinocchio' -c echo $PATH
+      - if: matrix.pm == 'nix'
+        run: nix develop 'nixpkgs#python310Packages.pinocchio' -c echo $CMAKE_PREFIX_PATH
+      - if: matrix.pm == 'nix'
+        run: nix develop 'nixpkgs#python310Packages.pinocchio' -c env
+      - if: matrix.pm == 'nix'
         run: nix develop 'nixpkgs#python310Packages.pinocchio' -c env >> $GITHUB_ENV
 
       # robotpkg
