@@ -59,15 +59,11 @@ jobs:
           echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf;
           nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs;
           nix-channel --update;
-          nix-env -iA nixpkgs.coreutils-full nixpkgs.python310Packages.pinocchio
+          nix-env -iA nixpkgs.python310Packages.pinocchio
       - if: matrix.pm == 'nix'
-        run: nix develop 'nixpkgs#python310Packages.pinocchio' -c echo $PATH
+        run: nix develop 'nixpkgs#python310Packages.pinocchio' -c env | grep .=.
       - if: matrix.pm == 'nix'
-        run: nix develop 'nixpkgs#python310Packages.pinocchio' -c echo $CMAKE_PREFIX_PATH
-      - if: matrix.pm == 'nix'
-        run: nix develop 'nixpkgs#python310Packages.pinocchio' -c env
-      - if: matrix.pm == 'nix'
-        run: nix develop 'nixpkgs#python310Packages.pinocchio' -c env >> $GITHUB_ENV
+        run: nix develop 'nixpkgs#python310Packages.pinocchio' -c env | grep .=. >> $GITHUB_ENV
 
       # robotpkg
       - if: matrix.pm == 'robotpkg'
