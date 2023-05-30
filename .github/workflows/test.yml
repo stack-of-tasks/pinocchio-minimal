@@ -11,8 +11,8 @@ jobs:
     runs-on: "${{ matrix.os }}-latest"
     strategy:
       matrix:
-        os: ["ubuntu", "macos", "windows"]
         pm: ["pip", "conda"]
+        os: ["ubuntu", "macos", "windows"]
         exclude:
           - pm: "pip"
             os: "windows"
@@ -30,6 +30,7 @@ jobs:
         if: matrix.pm == 'conda'
         with:
           auto-activate-base: true
+          activate-environment: ""
 
       - run: conda install -c conda-forge pinocchio
         if: matrix.pm == 'conda'
