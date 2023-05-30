@@ -11,32 +11,29 @@ jobs:
     runs-on: "${{ matrix.os }}-latest"
     strategy:
       matrix:
-        os: ["ubuntu", "macos"]
+        pm: ["pip", "conda"]
+        os: ["ubuntu", "macos", "windows"]
+        exclude:
+          - pm: "pip"
+            os: "windows"
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/setup-python@v4
+        if: matrix.pm == 'pip'
         with:
           python-version: "3.11"
       - run: pip install pin[build]
+        if: matrix.pm == 'pip'
       - run: echo "CMAKE_PREFIX_PATH=$(cmeel cmake)" >> $GITHUB_ENV
-
-      - run: cmake -B build -S .
-      - run: cmake --build build
-      - run: ./build/main
-
-  test-conda:
-    name: "Test conda on ${{ matrix.os }}"
-    runs-on: "${{ matrix.os }}-latest"
-    strategy:
-      matrix:
-        os: ["ubuntu", "macos", "windows"]
-    steps:
-      - uses: actions/checkout@v3
+        if: matrix.pm == 'pip'
 
       - uses: conda-incubator/setup-miniconda@v2
+        if: matrix.pm == 'conda'
       - run: conda install -n test -c conda-forge pinocchio
+        if: matrix.pm == 'conda'
       - run: echo "CMAKE_PREFIX_PATH=$CONDA/envs/test" >> $GITHUB_ENV
+        if: matrix.pm == 'conda'
 
       - run: cmake -B build -S .
       - run: cmake --build build
