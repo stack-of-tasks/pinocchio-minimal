@@ -12,7 +12,6 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu", "macos"]
-
     steps:
       - uses: actions/checkout@v3
 
@@ -32,7 +31,6 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu", "macos", "windows"]
-
     steps:
       - uses: actions/checkout@v3
 
@@ -42,5 +40,6 @@ jobs:
       - run: |
           conda activate test
           cmake -B build -S .
+        shell: bash -el {0}
       - run: cmake --build build
       - run: ./build/main
