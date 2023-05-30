@@ -16,10 +16,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: pip3 install pin[build]
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - run: pip install pin[build]
       - run: echo "CMAKE_PREFIX_PATH=$(cmeel cmake)" >> $GITHUB_ENV
 
-      - run: cmake -B build -S . -DPYTHON_EXECUTABLE=python3
+      - run: cmake -B build -S .
       - run: cmake --build build
       - run: ./build/main
 
