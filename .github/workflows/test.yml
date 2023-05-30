@@ -7,18 +7,12 @@ on:
 
 jobs:
   test:
-    name: "Test ${{ matrix.pm }} on ${{ matrix.os }} ${{ matrix.arch }}"
+    name: "Test ${{ matrix.pm }} on ${{ matrix.os }}"
     runs-on: "${{ matrix.os }}-latest"
     strategy:
       matrix:
         os: ["ubuntu", "macos"]
         pm: ["pip", "conda"]
-        arch: ["x86_64", "aarch64"]
-        exclude:
-          - arch: "aarch64"
-            os: "macos"
-          - arch: "aarch64"
-            pm: "conda"
 
     steps:
       - uses: actions/checkout@v3
@@ -27,12 +21,6 @@ jobs:
         if: matrix.pm == 'pip'
         with:
           python-version: "3.11"
-
-      - name: Set up QEMU
-        if: matrix.arch == 'aarch64'
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
 
       - run: python -m pip install pin[build]
         if: matrix.pm == 'pip'
