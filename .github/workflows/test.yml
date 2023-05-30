@@ -6,6 +6,7 @@ on:
     - cron: "0 7 * * 0"
 
 env:
+  NIX: "22.11"
   ROBOTPKG_URL: "http://robotpkg.openrobots.org/packages/debian"
   ROS: "humble"
   UBUNTU: "jammy"
@@ -16,11 +17,14 @@ jobs:
     runs-on: "${{ matrix.os }}-latest"
     strategy:
       matrix:
-        pm: ["pip", "conda"]
+        pm: ["pip", "conda", "nix"]
         os: ["ubuntu", "macos", "windows"]
         exclude:
           - pm: "pip"
             os: "windows"
+          - pm: "nix"
+            os: "windows"
+          - os: "windows"  # TODO: remove this, and fix it.
         include:
           - pm: "robotpkg"
             os: "ubuntu"
@@ -46,6 +50,14 @@ jobs:
         run: conda install -n test -c conda-forge pinocchio
       - if: matrix.pm == 'conda'
         run: echo "CMAKE_PREFIX_PATH=$CONDA/envs/test" >> $GITHUB_ENV
+
+      # nix
+      - if: matrix.pm == 'nix'
+        uses: cachix/install-nix-action@v21
+        with:
+          nix_path: nixpkgs=channel:nixos-${NIX}
+      - if: matrix.pm == 'nix'
+        run: nix-env -i python310Packages.pinocchio -f '<nixpkgs>'
 
       # robotpkg
       - if: matrix.pm == 'robotpkg'
@@ -77,11 +89,8 @@ jobs:
         run: >
           cmd /c '"%programfiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64 && set'
           | Select-String -Pattern "^(.*?)=(.*)$"
-      - if: matrix.os == 'windows'
-        run: >
-          cmd /c '"%programfiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64 && set'
-          | Select-String -Pattern "^(.*?)=(.*)$"
           | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
 
       - run: cmake -B build -S .
       - run: cmake --build build
@@ -92,7 +101,7 @@ jobs:
     #strategy:
       #matrix:
         #arch: ["x86_64", "aarch64"]
-        #os: ["ubuntu", "nix", "arch"]
+        #os: ["ubuntu", "arch"]
     #steps:
       #- uses: actions/checkout@v3
 
