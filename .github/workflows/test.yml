@@ -26,8 +26,8 @@ jobs:
         include:
           - pm: "robotpkg"
             os: "ubuntu"
-          #- pm: "ros"
-            #os: "ubuntu"
+          - pm: "ros"
+            os: "ubuntu"
     steps:
       - uses: actions/checkout@v3
 
@@ -71,7 +71,7 @@ jobs:
       - if: matrix.pm == 'ros'
         run: sudo apt-get update && sudo apt-get install -qy "ros-${ROS}-pinocchio"
       - if: matrix.pm == 'ros'
-        run: echo "CMAKE_PREFIX_PATH=/opt/ros" >> $GITHUB_ENV
+        run: echo "CMAKE_PREFIX_PATH=/opt/ros/${ROS}" >> $GITHUB_ENV
 
       # windows
       # thx https://gist.github.com/justinian/81a2e55c89e8301a8a96 & https://stackoverflow.com/a/74547513/1368502
