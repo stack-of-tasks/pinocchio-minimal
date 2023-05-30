@@ -54,11 +54,16 @@ jobs:
       - if: matrix.pm == 'nix'
         uses: cachix/install-nix-action@v21
       - if: matrix.pm == 'nix'
-        run: nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
+        run: >
+          mkdir -p ~/.config/nix;
+          echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf;
+          nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs;
+          nix-channel --update;
       - if: matrix.pm == 'nix'
-        run: nix-channel --update
-      - if: matrix.pm == 'nix'
-        run: nix-env -iA nixpkgs.python310Packages.pinocchio
+        run: >
+          nix shell 'nixpkgs#python310Packages.pinocchio' -c
+          nix develop 'nixpkgs#python310Packages.pinocchio' -c
+          env >> $GITHUB_ENV
 
       # robotpkg
       - if: matrix.pm == 'robotpkg'
