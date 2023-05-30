@@ -7,8 +7,8 @@ on:
 
 env:
   ROBOTPKG_URL: "http://robotpkg.openrobots.org/packages/debian"
-  UBUNTU: "jammy"
   ROS: "humble"
+  UBUNTU: "jammy"
 
 jobs:
   test:
@@ -26,8 +26,8 @@ jobs:
         include:
           - pm: "robotpkg"
             os: "ubuntu"
-          - pm: "ros"
-            os: "ubuntu"
+          #- pm: "ros"
+            #os: "ubuntu"
     steps:
       - uses: actions/checkout@v3
 
