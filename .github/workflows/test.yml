@@ -61,7 +61,7 @@ jobs:
           nix-channel --update;
       - if: matrix.pm == 'nix'
         run: >
-          nix shell 'nixpkgs#python310Packages.pinocchio' -c
+          nix shell 'nixpkgs#python310Packages.pinocchio' 'nixpkgs#coreutils' -c
           nix develop 'nixpkgs#python310Packages.pinocchio' -c
           env >> $GITHUB_ENV
 
@@ -102,12 +102,30 @@ jobs:
       - run: cmake --build build
       - run: ./build/main
 
-  #test-docker:  # For other OS / Archs
-    #runs-on: "${{ matrix.os }}-latest"
+  #test-docker:
+    #runs-on: "ubuntu-latest"
+    #container: ${{ matrix.container }}
     #strategy:
       #matrix:
-        #arch: ["x86_64", "aarch64"]
-        #os: ["ubuntu", "arch"]
+        #container: ["archlinux/archlinux:base-devel"]
+    #steps:
+      #- uses: actions/checkout@v3
+
+      #- run: curl https://github.com/Morganamilo/paru/releases/download/v1.11.2/paru-v1.11.2-x86_64.tar.zst -O
+      #- run: pacman -Syu "paru-*.tar.zst"
+      #- run: paru -Syu pinocchio
+
+      #- run: cmake -B build -S .
+      #- run: cmake --build build
+      #- run: ./build/main
+
+  #test-aarch64:
+    #runs-on: "ubuntu-latest"
+    #container: ${{ matrix.container }}
+    #strategy:
+      #matrix:
+        #container: ["archlinux/archlinux:base-devel"]
+        #pm: ["pip", "conda", "nix"]
     #steps:
       #- uses: actions/checkout@v3
 
