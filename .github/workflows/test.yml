@@ -41,8 +41,11 @@ jobs:
       - run: |
           conda info
           conda list
+        shell: bash -el {0}
         if: matrix.pm == 'conda'
 
       - run: cmake -B build -S .
+        shell: bash -el {0}
       - run: cmake --build build
+        shell: bash -el {0}
       - run: ./build/main
