@@ -6,7 +6,6 @@ on:
     - cron: "0 7 * * 0"
 
 env:
-  NIX: "22.11"
   ROBOTPKG_URL: "http://robotpkg.openrobots.org/packages/debian"
   ROS: "humble"
   UBUNTU: "jammy"
@@ -55,7 +54,7 @@ jobs:
       - if: matrix.pm == 'nix'
         uses: cachix/install-nix-action@v21
         with:
-          nix_path: nixpkgs=channel:nixos-${NIX}
+          nix_path: nixpkgs=channel:nixos-22.11
       - if: matrix.pm == 'nix'
         run: nix-env -i python310Packages.pinocchio -f '<nixpkgs>'
 
