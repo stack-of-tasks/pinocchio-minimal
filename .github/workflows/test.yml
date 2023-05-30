@@ -45,8 +45,8 @@ jobs:
       # apt
       - if: matrix.pm == 'apt'
         run: >
-          curl http://robotpkg.openrobots.org/packages/debian/robotpkg.asc > /etc/apt/keyrings/robotpkg.asc
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/robotpkg.asc] http://robotpkg.openrobots.org/packages/debian/pub jammy robotpkg" > /etc/apt/sources.list.d/robotpkg.list
+          curl http://robotpkg.openrobots.org/packages/debian/robotpkg.asc | sudo tee /etc/apt/keyrings/robotpkg.asc
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/robotpkg.asc] http://robotpkg.openrobots.org/packages/debian/pub jammy robotpkg" | sudo tee /etc/apt/sources.list.d/robotpkg.list
       - if: matrix.pm == 'apt'
         run: sudo apt-get update && sudo apt install robotpkg-py310-pinocchio
       - if: matrix.pm == 'apt'
