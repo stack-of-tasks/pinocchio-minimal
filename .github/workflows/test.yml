@@ -53,11 +53,10 @@ jobs:
       # nix
       - if: matrix.pm == 'nix'
         uses: cachix/install-nix-action@v21
+        with:
+          nix_path: nixpkgs=channel:nixpkgs-unstable
       - if: matrix.pm == 'nix'
-        run: >
-          nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs;
-          nix-channel --update;
-          nix-env -iA nixpkgs.python310Packages.pinocchio
+        run: nix-env -iA nixpkgs.python310Packages.pinocchio
       - if: matrix.pm == 'nix'
         run: nix develop 'nixpkgs#python310Packages.pinocchio' -c env | grep .=.
       - if: matrix.pm == 'nix'
