@@ -36,11 +36,8 @@ jobs:
 
       - uses: conda-incubator/setup-miniconda@v2
       - run: conda install -n test -c conda-forge pinocchio
+      - run: echo "CMAKE_PREFIX_PATH=$CONDA/envs/test" >> $GITHUB_ENV
 
-      - run: |
-          conda activate test
-          env
-          cmake -B build -S .
-        shell: bash -el {0}
+      - run: cmake -B build -S .
       - run: cmake --build build
       - run: ./build/main
