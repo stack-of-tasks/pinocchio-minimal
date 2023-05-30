@@ -39,6 +39,7 @@ jobs:
 
       - run: |
           conda activate test
+          env
           cmake -B build -S .
         shell: bash -el {0}
       - run: cmake --build build
