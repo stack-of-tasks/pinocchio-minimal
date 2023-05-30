@@ -44,11 +44,11 @@ jobs:
 
       # apt
       - if: matrix.pm == 'apt'
-        run: >
-          curl http://robotpkg.openrobots.org/packages/debian/robotpkg.asc | sudo tee /etc/apt/keyrings/robotpkg.asc
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/robotpkg.asc] http://robotpkg.openrobots.org/packages/debian/pub jammy robotpkg" | sudo tee /etc/apt/sources.list.d/robotpkg.list
+        run: curl http://robotpkg.openrobots.org/packages/debian/robotpkg.asc | sudo tee /etc/apt/keyrings/robotpkg.asc
       - if: matrix.pm == 'apt'
-        run: sudo apt-get update && sudo apt install robotpkg-py310-pinocchio
+        run: echo "deb [arch=amd64 signed-by=/usr/share/keyrings/robotpkg.asc] http://robotpkg.openrobots.org/packages/debian/pub jammy robotpkg" | sudo tee /etc/apt/sources.list.d/robotpkg.list
+      - if: matrix.pm == 'apt'
+        run: sudo apt-get update && sudo apt install -qy robotpkg-py310-pinocchio
       - if: matrix.pm == 'apt'
         run: echo "CMAKE_PREFIX_PATH=/opt/openrobots" >> $GITHUB_ENV
 
