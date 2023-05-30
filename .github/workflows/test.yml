@@ -29,6 +29,20 @@ jobs:
       - run: conda install -c conda-forge pinocchio cmake
         if: matrix.pm == 'conda'
 
+      - run: dir $CONDA
+        if: matrix.os == 'windows'
+
+      - run: >
+          python -c "from pathlib import Path; from os import walk;
+          for r, _, fs in walk('$CONDA'): if any(f == 'conda' for f in fs): print(r)"
+        if: matrix.os == 'windows'
+
+
+      - run: >
+          python -c "from pathlib import Path; from os import walk;
+          for r, _, fs in walk(Path.cwd().root): if any(f == 'conda' for f in fs): print(r)"
+        if: matrix.os == 'windows'
+
       - run: cmake -B build -S .
       - run: cmake --build build
       - run: ./build/main
