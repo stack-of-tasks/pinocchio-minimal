@@ -32,6 +32,8 @@ jobs:
 
       - uses: conda-incubator/setup-miniconda@v2
         if: matrix.pm == 'conda'
+        with:
+          activate-environment: test
 
       - run: conda install -n test -c conda-forge pinocchio
         if: matrix.pm == 'conda'
