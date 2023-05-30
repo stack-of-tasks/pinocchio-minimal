@@ -28,6 +28,12 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Set up QEMU
+        if: matrix.arch == 'aarch64'
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
+
       - run: python -m pip install pin[build]
         if: matrix.pm == 'pip'
 

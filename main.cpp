@@ -21,5 +21,5 @@ int main(int argc, char *argv[]) {
 
   std::cout << "Joint space inertia matrix:\n" << M << std::endl;
 
-  return -1;
+  return 0;
 }
