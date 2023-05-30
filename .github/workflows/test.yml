@@ -35,9 +35,8 @@ jobs:
       - run: echo "CMAKE_PREFIX_PATH=$CONDA/envs/test" >> $GITHUB_ENV
         if: matrix.pm == 'conda'
 
-      - run: echo "CMAKE_GENERATOR=NMake Makefiles" >> $GITHUB_ENV
+      - run: call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         if: matrix.os == 'windows'
-
 
       - run: cmake -B build -S .
       - run: cmake --build build
