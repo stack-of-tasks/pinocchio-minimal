@@ -39,7 +39,8 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
       - run: conda install -n test -c conda-forge pinocchio
 
-      - run: cmake -B build -S .
-        shell: conda run -n test /bin/bash -c {0}
+      - run: |
+          conda activate test
+          cmake -B build -S .
       - run: cmake --build build
       - run: ./build/main
