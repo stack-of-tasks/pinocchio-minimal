@@ -53,8 +53,10 @@ jobs:
       # nix
       - if: matrix.pm == 'nix'
         uses: cachix/install-nix-action@v21
-        with:
-          nix_path: nixpkgs=channel:nixpkgs-unstable
+      - if: matrix.pm == 'nix'
+        run: nix-channel --list
+      - if: matrix.pm == 'nix'
+        run: nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
       - if: matrix.pm == 'nix'
         run: nix-channel --list
       - if: matrix.pm == 'nix'
