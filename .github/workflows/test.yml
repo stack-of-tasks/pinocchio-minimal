@@ -20,12 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v4
-        if: matrix.pm == 'pip'
-        with:
-          python-version: "3.11"
-
-      - run: python -m pip install pin[build]
+      - run: pip install pin[build]
         if: matrix.pm == 'pip'
 
       - run: echo "CMAKE_PREFIX_PATH=$(cmeel cmake)" >> $GITHUB_ENV
