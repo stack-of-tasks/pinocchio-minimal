@@ -1,14 +1,15 @@
 # pinocchio-minimal
 
-Minimal project using Pinocchio as Rigid Body Dynamics library. 
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/stack-of-tasks/pinocchio-minimal/master.svg)](https://results.pre-commit.ci/latest/github/stack-of-tasks/pinocchio-minimal/master)
+
+Minimal project using Pinocchio as Rigid Body Dynamics library.
 This simple example shows how to link Pinocchio to a dedicated application.
 
 Please report bugs or questions to <pinocchio@laas.fr> or simply open a new issue.
 
 ## Build instructions:
 ```sh
-mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=Release ..
-make
-./main # to test
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+./build/main # to test
 ```
