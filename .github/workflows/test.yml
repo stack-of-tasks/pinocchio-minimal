@@ -43,7 +43,7 @@ jobs:
 
       # conda
       - if: matrix.pm == 'conda'
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
       - if: matrix.pm == 'conda'
         run: conda install -n test -c conda-forge pinocchio
       - if: matrix.pm == 'conda'
