@@ -58,8 +58,8 @@ jobs:
         run: nix-channel --update
       - if: matrix.pm == 'nix'
         run: >
-          nix shell   'nixpkgs#python310Packages.pinocchio' -c
-          nix develop 'nixpkgs#python310Packages.pinocchio' -c
+          nix shell   'nixpkgs#python311Packages.pinocchio' -c
+          nix develop 'nixpkgs#python311Packages.pinocchio' -c
           env | grep .=. >> $GITHUB_ENV
 
       # robotpkg
