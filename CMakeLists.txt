@@ -8,7 +8,7 @@ set(PROJECT_URL "http://github.com/stack-of-tasks/${PROJECT_NAME}")
 project(${PROJECT_NAME})
 
 # pinocchio dependency
-find_package(pinocchio 2.7.0 REQUIRED)
+find_package(pinocchio REQUIRED)
 
 # Create the main executable
 add_executable(main main.cpp)

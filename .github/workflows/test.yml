@@ -15,6 +15,7 @@ jobs:
     name: "Test ${{ matrix.pm }} on ${{ matrix.os }}"
     runs-on: "${{ matrix.os }}-latest"
     strategy:
+      fail-fast: false
       matrix:
         pm: ["pip", "conda", "nix"]
         os: ["ubuntu", "macos", "windows"]
@@ -43,7 +44,7 @@ jobs:
 
       # conda
       - if: matrix.pm == 'conda'
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v3
       - if: matrix.pm == 'conda'
         run: conda install -n test -c conda-forge pinocchio
       - if: matrix.pm == 'conda'
@@ -58,8 +59,8 @@ jobs:
         run: nix-channel --update
       - if: matrix.pm == 'nix'
         run: >
-          nix shell   'nixpkgs#python310Packages.pinocchio' -c
-          nix develop 'nixpkgs#python310Packages.pinocchio' -c
+          nix shell   'nixpkgs#python311Packages.pinocchio' -c
+          nix develop 'nixpkgs#python311Packages.pinocchio' -c
           env | grep .=. >> $GITHUB_ENV
 
       # robotpkg
