@@ -58,6 +58,8 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@master
       - if: matrix.pm == 'brew'
         run: brew install pinocchio
+      - if: matrix.pm == 'brew'
+        run: echo "PATH=/opt/homebrew/opt/python@3/libexec/bin:$PATH" >> $GITHUB_ENV
 
       # conda
       - if: matrix.pm == 'conda'
