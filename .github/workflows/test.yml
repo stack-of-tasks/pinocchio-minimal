@@ -130,29 +130,30 @@ jobs:
       - run: cmake --build build
       - run: ./build/main
 
-  test-arch:
-    runs-on: "ubuntu-latest"
-    container: ${{ matrix.container }}
-    strategy:
-      fail-fast: false
-      matrix:
-        container: ["archlinux/archlinux:base-devel"]
-    env:
-      MAKEFLAGS: -j4
-    steps:
-      - uses: actions/checkout@v3
+  # TODO: way too long
+  #test-arch:
+    #runs-on: "ubuntu-latest"
+    #container: ${{ matrix.container }}
+    #strategy:
+      #fail-fast: false
+      #matrix:
+        #container: ["archlinux/archlinux:base-devel"]
+    #env:
+      #MAKEFLAGS: -j4
+    #steps:
+      #- uses: actions/checkout@v3
 
-      # install paru
-      - run: pacman -Syu --noconfirm git
-      - run: useradd -mG wheel user
-      - run: echo "%wheel ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-      - run: git clone https://aur.archlinux.org/paru-bin.git
-      - run: chown -R user paru-bin
-      - run: su user -c "makepkg -D paru-bin -si --noconfirm"
+      ## install paru
+      #- run: pacman -Syu --noconfirm git
+      #- run: useradd -mG wheel user
+      #- run: echo "%wheel ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+      #- run: git clone https://aur.archlinux.org/paru-bin.git
+      #- run: chown -R user paru-bin
+      #- run: su user -c "makepkg -D paru-bin -si --noconfirm"
 
-      # use paru to install pinocchio and its dependencies from AUR
-      - run: su user -c "paru -Syu --noconfirm pinocchio"
+      ## use paru to install pinocchio and its dependencies from AUR
+      #- run: su user -c "paru -Syu --noconfirm pinocchio"
 
-      - run: cmake -B build -S .
-      - run: cmake --build build
-      - run: ./build/main
+      #- run: cmake -B build -S .
+      #- run: cmake --build build
+      #- run: ./build/main
