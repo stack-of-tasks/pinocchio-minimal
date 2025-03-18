@@ -12,46 +12,34 @@ on:
 
 env:
   ROBOTPKG_URL: "http://robotpkg.openrobots.org/packages/debian"
-  ROS: "humble"
-  UBUNTU: "jammy"
+  ROS: "jazzy"
+  UBUNTU: "noble"
 
 jobs:
   test:
-    name: "Test ${{ matrix.pm }} on ${{ matrix.os }} ${{ matrix.arch }}"
-    runs-on: "${{ matrix.os }}-latest"
+    name: "Test ${{ matrix.pm }} on ${{ matrix.os }}"
+    runs-on: "${{ matrix.os }}"
     strategy:
       fail-fast: false
       matrix:
         pm: ["pip", "conda", "nix"]
-        os: ["ubuntu", "macos", "windows"]
-        arch: ["main"]
+        os: ["ubuntu-24.04", "ubuntu-24.04-arm", "macos-13", "macos-14", windows-latest"]
         exclude:
           - pm: "pip"
-            os: "windows"
+            os: "windows-latest"
           - pm: "nix"
-            os: "windows"
+            os: "windows-latest"
         include:
           - pm: "robotpkg"
-            os: "ubuntu"
+            os: "ubuntu-24.04"
           - pm: "ros"
-            os: "ubuntu"
+            os: "ubuntu-24.04"
           - pm: "brew"
-            os: "macos"
-          - arch: "aarch64"
-            os: "ubuntu"
-            pm: "pip"
-          - arch: "aarch64"
-            os: "ubuntu"
-            pm: "nix"
+            os: "macos-13"
+          - pm: "brew"
+            os: "macos-14"
     steps:
       - uses: actions/checkout@v3
-
-      # aarch64
-      - name: Set up QEMU
-        if: matrix.arch == 'aarch64'
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: all
 
       # brew
       - if: matrix.pm == 'brew'
@@ -128,9 +116,9 @@ jobs:
 
       - run: cmake -B build -DCMAKE_BUILD_TYPE=Release
       - run: cmake --build build
-      - if: matrix.os != 'windows'
+      - if: matrix.os != 'windows-latest'
         run: ./build/main
-      - if: matrix.os == 'windows'
+      - if: matrix.os == 'windows-latest'
         run: .\build\Debug\main.exe
 
   # TODO: way too long
