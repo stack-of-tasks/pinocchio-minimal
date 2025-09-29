@@ -4,7 +4,7 @@
 #include <pinocchio/multibody/model.hpp>
 #include <pinocchio/parsers/sample-models.hpp>
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   using namespace pinocchio;
   Model model;
   buildModels::humanoid(model);
