@@ -35,8 +35,6 @@ jobs:
           - pm: "ros"
             os: "ubuntu-24.04"
           - pm: "brew"
-            os: "macos-15-intel"
-          - pm: "brew"
             os: "macos-15"
     steps:
       - uses: actions/checkout@v5
@@ -45,7 +43,7 @@ jobs:
       - if: matrix.pm == 'brew'
         uses: Homebrew/actions/setup-homebrew@master
       - if: matrix.pm == 'brew'
-        run: brew install pinocchio numpy
+        run: brew install pinocchio
       - if: matrix.pm == 'brew'
         run: echo "PATH=/opt/homebrew/opt/python@3/libexec/bin:$PATH" >> $GITHUB_ENV
 
@@ -118,7 +116,7 @@ jobs:
 
   docker:
     runs-on: "ubuntu-latest"
-    container: "ghcr.io/stack-of-tasks/pinocchio:devel" # todo: release ?
+    container: "ghcr.io/stack-of-tasks/pinocchio:devel" # todo: latest ?
     steps:
       - uses: actions/checkout@v5
 
