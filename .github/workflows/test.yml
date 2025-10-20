@@ -9,6 +9,9 @@ on:
       - main
   schedule:
     - cron: "0 7 * * 0"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   ROBOTPKG_URL: "http://robotpkg.openrobots.org/packages/debian"
