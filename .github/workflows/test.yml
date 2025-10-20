@@ -45,7 +45,7 @@ jobs:
       - if: matrix.pm == 'brew'
         uses: Homebrew/actions/setup-homebrew@master
       - if: matrix.pm == 'brew'
-        run: brew install pinocchio
+        run: brew install pinocchio numpy
       - if: matrix.pm == 'brew'
         run: echo "PATH=/opt/homebrew/opt/python@3/libexec/bin:$PATH" >> $GITHUB_ENV
 
