@@ -1,0 +1,9 @@
+name: pinocchio-minimal
+channels:
+  - conda-forge
+dependencies:
+  - cmake
+  - cxx-compiler
+  - pkg-config
+  - ninja
+  - libpinocchio
