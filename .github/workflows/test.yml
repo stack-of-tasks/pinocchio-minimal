@@ -104,12 +104,20 @@ jobs:
       - if: matrix.pm == 'ros'
         run: echo "CMAKE_PREFIX_PATH=/opt/ros/${ROS}" >> $GITHUB_ENV
 
-      - name: Build and configure
-        shell: bash -l {0}
+      - name: Configure and build [MacOS/Ubuntu]
+        shell: bash -el {0}
+        if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
         run: |
           cmake -B build -DCMAKE_BUILD_TYPE=Release -GNinja
           cmake --build build
           ./build/main
+      - name: Configure and build [Windows]
+        shell: cmd /C CALL {0}
+        if: contains(matrix.os, 'windows')
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -GNinja
+          cmake --build build
+          build\main
 
   docker:
     runs-on: "ubuntu-latest"
