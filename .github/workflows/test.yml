@@ -46,9 +46,7 @@ jobs:
       - if: matrix.pm == 'brew'
         uses: Homebrew/actions/setup-homebrew@master
       - if: matrix.pm == 'brew'
-        run: brew install pinocchio numpy
-      - if: matrix.pm == 'brew'
-        run: echo "PATH=/opt/homebrew/opt/python@3/libexec/bin:$PATH" >> $GITHUB_ENV
+        run: brew install pinocchio
 
       # conda
       - if: matrix.pm == 'conda'
@@ -108,7 +106,10 @@ jobs:
         shell: bash -el {0}
         if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -GNinja
+          cmake -B build \
+                -DCMAKE_BUILD_TYPE=Release \
+                -GNinja \
+                -DPYTHON_EXECUTABLE=$(which python3)
           cmake --build build
           ./build/main
       - name: Configure and build [Windows]
