@@ -108,6 +108,8 @@ jobs:
         shell: bash -el {0}
         if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
         run: |
+          which python
+          python -c "import numpy"
           cmake -B build -DCMAKE_BUILD_TYPE=Release -GNinja
           cmake --build build
           ./build/main
