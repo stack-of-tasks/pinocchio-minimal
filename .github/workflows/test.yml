@@ -55,7 +55,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-version: latest
-          activate-environment: pinocchio-minimal
+          activate-environment: pinocchio
           environment-file: .github/workflows/conda/environment.yml
           auto-activate-base: false
           auto-update-conda: true

@@ -1,4 +1,4 @@
-name: pinocchio-minimal
+name: pinocchio
 channels:
   - conda-forge
 dependencies:
