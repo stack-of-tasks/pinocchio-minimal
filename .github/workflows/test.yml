@@ -2,66 +2,83 @@ name: Tests
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   schedule:
     - cron: "0 7 * * 0"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   ROBOTPKG_URL: "http://robotpkg.openrobots.org/packages/debian"
-  ROS: "humble"
-  UBUNTU: "jammy"
+  ROS: "jazzy"
+  UBUNTU: "noble"
 
 jobs:
   test:
     name: "Test ${{ matrix.pm }} on ${{ matrix.os }}"
-    runs-on: "${{ matrix.os }}-latest"
+    runs-on: "${{ matrix.os }}"
     strategy:
       fail-fast: false
       matrix:
         pm: ["pip", "conda", "nix"]
-        os: ["ubuntu", "macos", "windows"]
+        os: ["ubuntu-24.04", "ubuntu-24.04-arm", "macos-15-intel", "macos-15", "windows-latest"]
         exclude:
           - pm: "pip"
-            os: "windows"
+            os: "windows-latest"
           - pm: "nix"
-            os: "windows"
+            os: "windows-latest"
         include:
           - pm: "robotpkg"
-            os: "ubuntu"
+            os: "ubuntu-24.04"
           - pm: "ros"
-            os: "ubuntu"
+            os: "ubuntu-24.04"
+          - pm: "brew"
+            os: "macos-15"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
-      # pip
-      - if: matrix.pm == 'pip'
-        uses: actions/setup-python@v4  # required only because macos-latest still has python 2 by default…
-        with:
-          python-version: "3.11"
-      - if: matrix.pm == 'pip'
-        run: pip install pin[build]
-      - if: matrix.pm == 'pip'
-        run: echo "CMAKE_PREFIX_PATH=$(cmeel cmake)" >> $GITHUB_ENV
+      # brew
+      - if: matrix.pm == 'brew'
+        uses: Homebrew/actions/setup-homebrew@master
+      - if: matrix.pm == 'brew'
+        run: brew install pinocchio
 
       # conda
       - if: matrix.pm == 'conda'
         uses: conda-incubator/setup-miniconda@v3
-      - if: matrix.pm == 'conda'
-        run: conda install -n test -c conda-forge pinocchio
-      - if: matrix.pm == 'conda'
-        run: echo "CMAKE_PREFIX_PATH=$CONDA/envs/test" >> $GITHUB_ENV
+        with:
+          miniforge-version: latest
+          activate-environment: pinocchio
+          environment-file: .github/workflows/conda/environment.yml
+          auto-activate-base: false
+          auto-update-conda: true
+          conda-remove-defaults: true
 
       # nix
       - if: matrix.pm == 'nix'
-        uses: cachix/install-nix-action@v21
-        with:
-          nix_path: nixpkgs=channel:nixpkgs-unstable
-      - if: matrix.pm == 'nix'
-        run: nix-channel --update
+        uses: cachix/install-nix-action@v31
       - if: matrix.pm == 'nix'
         run: >
-          nix shell   'nixpkgs#python311Packages.pinocchio' -c
-          nix develop 'nixpkgs#python311Packages.pinocchio' -c
+          nix shell   'nixpkgs#python3Packages.pinocchio' -c
+          nix develop 'nixpkgs#python3Packages.pinocchio' -c
           env | grep .=. >> $GITHUB_ENV
+      - if: matrix.pm == 'nix'
+        run: echo "CMAKE_PREFIX_PATH=${NIXPKGS_CMAKE_PREFIX_PATH}" >> $GITHUB_ENV
+
+      # pip
+      - if: matrix.pm == 'pip'
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - if: matrix.pm == 'pip'
+        run: pip install pin[build]
+      - if: matrix.pm == 'pip'
+        run: echo "CMAKE_PREFIX_PATH=$(cmeel cmake)" >> $GITHUB_ENV
 
       # robotpkg
       - if: matrix.pm == 'robotpkg'
@@ -71,7 +88,7 @@ jobs:
           echo "deb [arch=amd64 signed-by=/robotpkg.gpg] ${ROBOTPKG_URL}/pub ${UBUNTU} robotpkg"
           | sudo tee /etc/apt/sources.list.d/robotpkg.list
       - if: matrix.pm == 'robotpkg'
-        run: sudo apt-get update && sudo apt-get install -qy robotpkg-py310-pinocchio
+        run: sudo apt-get update && sudo apt-get install -qy robotpkg-py3*-pinocchio
       - if: matrix.pm == 'robotpkg'
         run: echo "CMAKE_PREFIX_PATH=/opt/openrobots" >> $GITHUB_ENV
 
@@ -87,45 +104,57 @@ jobs:
       - if: matrix.pm == 'ros'
         run: echo "CMAKE_PREFIX_PATH=/opt/ros/${ROS}" >> $GITHUB_ENV
 
-      # windows
-      # thx https://gist.github.com/justinian/81a2e55c89e8301a8a96 & https://stackoverflow.com/a/74547513/1368502
-      - if: matrix.os == 'windows'
-        run: >
-          cmd /c '"%programfiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64 && set'
-          | Select-String -Pattern "^(.*?)=(.*)$"
-          | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Configure and build [MacOS/Ubuntu]
+        shell: bash -el {0}
+        if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
+        run: |
+          cmake -B build \
+                -DCMAKE_BUILD_TYPE=Release \
+                -GNinja \
+                -DPYTHON_EXECUTABLE=$(which python3)
+          cmake --build build
+          ./build/main
+      - name: Configure and build [Windows]
+        shell: cmd /C CALL {0}
+        if: contains(matrix.os, 'windows')
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -GNinja
+          cmake --build build
+          build\main
 
+  docker:
+    runs-on: "ubuntu-latest"
+    container: "ghcr.io/stack-of-tasks/pinocchio:devel" # todo: latest ?
+    steps:
+      - uses: actions/checkout@v5
 
-      - run: cmake -B build -S .
+      - run: cmake -B build -DCMAKE_BUILD_TYPE=Release
       - run: cmake --build build
       - run: ./build/main
 
-  #test-docker:
+  # TODO: way too long
+  #test-arch:
     #runs-on: "ubuntu-latest"
     #container: ${{ matrix.container }}
     #strategy:
+      #fail-fast: false
       #matrix:
         #container: ["archlinux/archlinux:base-devel"]
+    #env:
+      #MAKEFLAGS: -j4
     #steps:
       #- uses: actions/checkout@v3
 
-      #- run: curl https://github.com/Morganamilo/paru/releases/download/v1.11.2/paru-v1.11.2-x86_64.tar.zst -O
-      #- run: pacman -Syu "paru-*.tar.zst"
-      #- run: paru -Syu pinocchio
+      ## install paru
+      #- run: pacman -Syu --noconfirm git
+      #- run: useradd -mG wheel user
+      #- run: echo "%wheel ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+      #- run: git clone https://aur.archlinux.org/paru-bin.git
+      #- run: chown -R user paru-bin
+      #- run: su user -c "makepkg -D paru-bin -si --noconfirm"
 
-      #- run: cmake -B build -S .
-      #- run: cmake --build build
-      #- run: ./build/main
-
-  #test-aarch64:
-    #runs-on: "ubuntu-latest"
-    #container: ${{ matrix.container }}
-    #strategy:
-      #matrix:
-        #container: ["archlinux/archlinux:base-devel"]
-        #pm: ["pip", "conda", "nix"]
-    #steps:
-      #- uses: actions/checkout@v3
+      ## use paru to install pinocchio and its dependencies from AUR
+      #- run: su user -c "paru -Syu --noconfirm pinocchio"
 
       #- run: cmake -B build -S .
       #- run: cmake --build build
