@@ -67,6 +67,8 @@ jobs:
           nix shell   'nixpkgs#python3Packages.pinocchio' -c
           nix develop 'nixpkgs#python3Packages.pinocchio' -c
           env | grep .=. >> $GITHUB_ENV
+      - if: matrix.pm == 'nix'
+        run: echo "CMAKE_PREFIX_PATH=${NIXPKGS_CMAKE_PREFIX_PATH}" >> $GITHUB_ENV
 
       # pip
       - if: matrix.pm == 'pip'
