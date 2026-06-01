@@ -2,7 +2,7 @@
 #include <pinocchio/algorithm/crba.hpp>
 #include <pinocchio/algorithm/joint-configuration.hpp>
 #include <pinocchio/multibody/model.hpp>
-#include <pinocchio/parsers/sample-models.hpp>
+#include <pinocchio/multibody/sample-models.hpp>
 
 int main(int argc, char* argv[]) {
   using namespace pinocchio;
