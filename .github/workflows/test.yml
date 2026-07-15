@@ -32,6 +32,8 @@ jobs:
             os: "windows-latest"
           - pm: "nix"
             os: "windows-latest"
+          - pm: "nix"
+            os: "macos-15-intel"
         include:
           - pm: "robotpkg"
             os: "ubuntu-24.04"
